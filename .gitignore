@@ -4,3 +4,7 @@ Utils/JDC/__pycache__/*
 Utils/ASR/__pycache__/*
 LICENSE
 test.py
+inference.py
+inference_mymodel.py
+list2dic.py
+list2dic_def.py
