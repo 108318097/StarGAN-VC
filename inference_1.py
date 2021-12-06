@@ -16,23 +16,12 @@ from Utils.ASR.models import ASRCNN
 from Utils.JDC.model import JDCNet
 from models import Generator, MappingNetwork, StyleEncoder
 
-# %matplotlib inline
-
-# speakers = [225,228,229,230,231,233,236,239,240,244,226,227,232,243,254,256,258,259,270,273]
-# speakers = ['吳斯懷','林為洲','江啟臣','蔡適應','陳柏惟','高嘉瑜']
-# speakers = ['吳斯懷','吳釗燮','江啟臣','蔡適應','王定宇','馬文君','呂玉玲']
-# speakers = ['SSB1837','SSB0578','SSB1161','SSB0016','SSB0588','SSB0534','SSB0380','SSB0273','SSB1863']
-# speakers = ['吳斯懷','吳釗燮','呂玉玲','嚴德發','林昶佐','江啟臣','王定宇','蔡適應','邱國正','馬文君']
-# rawdata = pd.read_csv('wave_data_time.csv')
-# speakers = [rawdata['Speaker\tWave_Times'][i].split('\t')[0] for i in range(len(rawdata))]
-# speakers_dic = {'吳斯懷':15,'吳釗燮':84,'呂玉玲':28,'嚴德發':12,'林昶佐':105,'江啟臣':39,'王定宇':96,'蔡適應':92,'邱國正':121,'馬文君':122,'高嘉瑜':95,'馮世寬':106}
-
 # speakers
 dic_path = './Data/AIshell_train_test/'
 speakers_dic = pd.read_csv(dic_path + 'speakers_dct.csv', header=None, index_col=0, squeeze=True).to_dict()
 print(speakers_dic)
 
-'''
+
 to_mel = torchaudio.transforms.MelSpectrogram(
     n_mels=80, n_fft=2048, win_length=1200, hop_length=300)
 mean, std = -4, 4
@@ -91,7 +80,6 @@ _ = vocoder.eval()
 
 
 # load starganv2
-
 model_path = 'Models/Train_starGAN_v2-1/epoch_00150.pth'
 
 with open('Models/Train_starGAN_v2-1/config.yml') as f:
@@ -105,20 +93,14 @@ starganv2.style_encoder = starganv2.style_encoder.to('cuda')
 starganv2.mapping_network = starganv2.mapping_network.to('cuda')
 starganv2.generator = starganv2.generator.to('cuda')
 
+
 # load input wave
-# selected_speakers = [273, 259, 258, 243, 254, 244, 236, 233, 230, 228]
-# selected_speakers = ['吳斯懷','林為洲','江啟臣','蔡適應','陳柏惟','高嘉瑜']
-# selected_speakers = ['SSB0005','SSB0316','SSB0341']
-# selected_speakers = ['吳斯懷','吳釗燮','呂玉玲','嚴德發','林昶佐','江啟臣','王定宇','蔡適應','邱國正','馬文君','高嘉瑜','馮世寬']
-selected_speakers = ['呂玉玲']
-# selected_speakers = ['SSB1837','SSB0578','SSB1161','SSB0016','SSB0588','SSB0534','SSB0380','SSB0273','SSB1863']
+selected_speakers = ['吳斯懷','吳釗燮','呂玉玲','嚴德發','林昶佐','江啟臣','王定宇','蔡適應','邱國正','馬文君','高嘉瑜','馮世寬']
 # k = random.choice(selected_speakers)
 k = '吳斯懷'
 
 # wav_path = 'Demo/VCTK-corpus/p' + str(k) + '/p' + str(k) + '_023.wav'
 wav_path = 'Demo/LY/' + str(k) + '/1.wav'
-# wav_path = 'Demo/Aishell3/' + str(k) + '/1.wav'
-# wav_path = 'Demo/AI_Lab/思齊/1.wav'
 
 audio, source_sr = librosa.load(wav_path, sr=24000)
 audio = audio / np.max(np.abs(audio))
@@ -129,8 +111,6 @@ speaker_dicts = {}
 for s in selected_speakers:
     k = s
     # speaker_dicts['p' + str(s)] = ('Demo/VCTK-corpus/p' + str(k) + '/p' + str(k) + '_023.wav', speakers.index(s))
-    # speaker_dicts[str(s)] = ('Demo/LY/' + str(k) + '/' + '1.wav', speakers.index(s))
-    # speaker_dicts[str(s)] = ('Demo/Aishell3/' + str(k) + '/' + '1.wav', speakers.index(s))
     speaker_dicts[str(s)] = ('Demo/LY/' + str(k) + '/' + '1.wav', speakers_dic[s])
 
 reference_embeddings = compute_style(speaker_dicts)
@@ -186,4 +166,3 @@ with torch.no_grad():
 
 print('Original:')
 # display(ipd.Audio(wav_path, rate=24000))
-'''
